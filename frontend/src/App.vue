@@ -1,24 +1,28 @@
 <template>
-<Footer/>
+  <div>
+    <nav-el />
+    <router-view />
+  </div>
 </template>
 
 <script>
-import Footer from './components/footer.vue'
+import NavEl from "./components/nav.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    Footer
-  }
-}
+    NavEl,
+  },
+};
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+  display: flex;
+  flex-direction: column;
   color: #2c3e50;
   margin: 0 auto;
   padding: 0;
