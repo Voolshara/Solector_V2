@@ -2,16 +2,19 @@
   <div class="wrapper">
     <nav-el />
     <router-view />
+    <Footer/>
   </div>
 </template>
 
 <script>
 import NavEl from "./components/nav.vue";
+import Footer from "./components/footer.vue";
 
 export default {
   name: "App",
   components: {
     NavEl,
+    Footer
   },
 };
 </script>
