@@ -26,6 +26,7 @@
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap");
 .promo {
+  margin-top: 40px;
   display: flex;
 
   .text {

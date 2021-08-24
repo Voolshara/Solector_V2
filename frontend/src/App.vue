@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="wrapper">
     <nav-el />
     <router-view />
   </div>
@@ -17,6 +17,10 @@ export default {
 </script>
 
 <style>
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
