@@ -3,7 +3,12 @@ import { createRouter, createWebHistory } from "vue-router";
 const routes = [
   { path: "/", component: () => import("@/routes/main_page.vue") },
   { path: "/marketplace", component: () => import("@/routes/marketplace.vue") },
+  {
+    path: "/product/:product_name",
+    component: () => import("@/routes/product.vue"),
+  },
   { path: "/feedback", component: () => import("@/routes/feedback_form.vue") },
+  { path: "/lk", component: () => import("@/routes/feedback_form.vue") },
 ];
 
 // 3. Create the router instance and pass the `routes` option

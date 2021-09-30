@@ -1,7 +1,7 @@
 <template>
   <nav>
     <el-menu
-      :default-active="activeIndex"
+      :default-active="set_nav($route.path)"
       class="el-menu-demo"
       mode="horizontal"
       v-on:select="handleSelect"
@@ -33,11 +33,15 @@
 <script>
 export default {
   data() {
-    return {
-      activeIndex: "/",
-    };
+    return {};
   },
   methods: {
+    set_nav(value) {
+      if (value.includes("product")) {
+        return "/marketplace";
+      }
+      return value;
+    },
     handleSelect(key) {
       this.$router.push(key);
     },

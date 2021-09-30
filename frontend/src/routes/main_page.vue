@@ -32,6 +32,7 @@
   margin-top: 40px;
   margin-bottom: 40px;
   display: flex;
+  text-align: center;
   @media (max-width: 720px) {
     flex-direction: column;
   }

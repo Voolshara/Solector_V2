@@ -1,6 +1,8 @@
 import sqlalchemy as sa
+from sqlalchemy import  func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql import and_
 
 import os
 from dotenv import load_dotenv
@@ -46,12 +48,105 @@ class Panels(Base):
     __tablename__ = 'panels'
     id = sa.Column(sa.Integer, primary_key=True)
     name = sa.Column(sa.String())
+    link_name = sa.Column(sa.String())
     cost = sa.Column(sa.Integer)
     power = sa.Column(sa.Integer)
     efficiency = sa.Column(sa.Float)
     img_link = sa.Column(sa.String())
     producer = sa.Column(sa.Integer, sa.ForeignKey(Panel_Producers.id))
     panel_link = sa.Column(sa.String())
+
+
+class DB_get:
+    def __init__(self):
+        pass
+
+    def get_marketplace_data(self):
+        with create_session() as session:
+            db_response = session.query(Panel_Producers).all()
+            all_producers = [i.name for i in db_response]
+            db_response = session.query(
+                func.max(Panels.power).label("max_power"), 
+                func.min(Panels.power).label("min_power"),
+                func.max(Panels.cost).label("max_cost"), 
+                func.min(Panels.cost).label("min_cost"),
+                ).one()
+            return {
+                'brands' : all_producers,
+                'power' : [db_response.min_power, db_response.max_power],
+                'cost' : [db_response.min_cost, db_response.max_cost]
+                }
+
+    def get_panels(self, filters):
+        with create_session() as session:
+            if filters['brands'] is None:
+                db_response = session.query(Panel_Producers).all()
+                brands_ids = [i.id for i in db_response]
+            else:    
+                brands_ids = []
+                for brand in filters['brands'].keys():
+                    if filters['brands'][brand]:
+                        db_response = session.query(Panel_Producers).filter(
+                            Panel_Producers.name == brand).one_or_none()
+                        if db_response is not None:
+                            brands_ids.append(db_response.id)
+            
+            if filters['power'] is None:
+                db_response = session.query(
+                func.max(Panels.power).label("max_power"), 
+                func.min(Panels.power).label("min_power"),).one()
+                min_power = db_response.min_power
+                max_power = db_response.max_power
+            else:
+                min_power = filters['power'][0]
+                max_power = filters['power'][1]
+
+            if filters['cost'] is None:
+                db_response = session.query(
+                func.max(Panels.cost).label("max_cost"), 
+                func.min(Panels.cost).label("min_cost"),).one()
+                min_cost = db_response.min_cost
+                max_cost = db_response.max_cost
+            else:
+                min_cost = filters['cost'][0]
+                max_cost = filters['cost'][1]
+
+            db_response = session.query(Panels).filter(and_(
+                Panels.producer.in_(brands_ids), 
+                Panels.power >= min_power, Panels.power <= max_power,
+                Panels.cost >= min_cost, Panels.cost <= max_cost
+            )).all()
+
+            PANELS = []
+            for el in db_response:
+                db_response = session.query(Panel_Producers).filter(
+                        Panel_Producers.id == el.producer).one_or_none()
+                producer = db_response.name
+                PANELS.append({
+                    'name' : el.name,
+                    'link_name' : el.link_name,
+                    'cost' : el.cost,
+                    'power' : el.power,
+                    'efficiency' : el.efficiency,
+                    'img' : el.img_link,
+                    'producer' : producer,
+                    'panel_link' : el.panel_link,
+                })
+            return PANELS
+
+    def get_product(self, product):
+        with create_session() as session:
+            db_response = session.query(Panels).filter(Panels.link_name == product).one_or_none()
+            producer_response = session.query(Panel_Producers).filter(Panel_Producers.id == db_response.producer).one_or_none()
+            return {
+                    'name' : db_response.name,
+                    'cost' : db_response.cost,
+                    'power' : db_response.power,
+                    'efficiency' : db_response.efficiency,
+                    'img' : db_response.img_link,
+                    'producer' : producer_response.name,
+                    'panel_link' : db_response.panel_link,
+                }
 
 
 class DB_new:
@@ -144,9 +239,18 @@ class DB_new:
                 status_response = session.query(Panels).filter(Panels.name == name).one_or_none()
                 if status_response is None:
                     session.add(Panels(name=name,
+                                    link_name = "-".join(name.split('/')),
                                     cost=cost,
                                     power=power,
                                     efficiency=eff,
                                     img_link=img,
                                     producer=producer,
                                     panel_link=panel_link))
+
+
+# DBN = DB_new()
+# DBN.create_all_tables()
+
+# fil = {'brands': {'Hevel Solar': True}, 'power': [200, 390], 'cost': [15000, 34000]}
+# DBG = DB_get()
+# DBG.get_panels(fil)
