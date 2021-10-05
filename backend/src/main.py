@@ -24,9 +24,9 @@ def marketplace():
 
 @app.route('/product', methods=['POST'])  # роут сборки шаблонов
 def product():
-    return {'data' : DBG.get_product(request.json['product'])}
+    return {'data' : DBG.get_product(request.json)}
 
 
 @runner.command()
 def runner():
-    app.run(host="192.168.1.82", port="4900") # запуск сервера
+    app.run(host="localhost", port="4900") # запуск сервера

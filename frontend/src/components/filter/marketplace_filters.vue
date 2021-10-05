@@ -14,6 +14,7 @@
             :ma="this.power[1]"
             :range="2"
             :slider_type="'power'"
+            :power_slider="power"
           />
         </div>
       </el-collapse-item>
@@ -28,6 +29,11 @@
           />
         </div>
       </el-collapse-item>
+      <div class="return-filters">
+        <button v-on:click="restoreFilters" class="button">
+          Сбросить Фильтры
+        </button>
+      </div>
     </el-collapse>
   </div>
 </template>
@@ -55,7 +61,7 @@ export default {
       if (variable !== null) {
         this.all_filters[variable["type"]] = variable["data"];
       }
-      fetch("http://192.168.1.82:4900/marketplace/data", {
+      fetch("http://localhost:4900/marketplace/data", {
         method: "POST", // *GET, POS  T, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -77,9 +83,18 @@ export default {
           console.error("Error:", error);
         });
     },
+    restoreFilters() {
+      let all_filters = {
+        brands: null,
+        power: null,
+        cost: null,
+      };
+      this.all_filters = all_filters;
+      this.$forceUpdate();
+    },
   },
   beforeCreate() {
-    fetch("http://192.168.1.82:4900/marketplace/get_filters", {
+    fetch("http://localhost:4900/marketplace/get_filters", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -98,6 +113,9 @@ export default {
         this.brands = data["brands"];
         this.power = data["power"];
         this.cost = data["cost"];
+        this.primary_brands = data["brands"];
+        this.primary_power = data["power"];
+        this.cost = data["cost"];
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -109,7 +127,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap");
 :root {
   --global-background: rgb(255, 255, 255);
@@ -132,5 +150,27 @@ export default {
   --el-collapse-header-background-color: rgba(0, 0, 0, 0);
   --el-collapse-content-background-color: rgba(0, 0, 0, 0);
   --el-collapse-header-font-size: 18px;
+}
+
+.return-filters {
+  height: 40px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--main-color);
+
+  .button {
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    color: var(--main-color);
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+  }
+  .button:hover {
+    color: var(--main-hover);
+  }
 }
 </style>

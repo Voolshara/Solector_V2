@@ -12,7 +12,7 @@ export default {
     };
   },
   mounted() {
-    fetch("http://192.168.1.82:4900/product", {
+    fetch("http://localhost:4900/product", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -25,6 +25,7 @@ export default {
       redirect: "follow", // manual, *follow, error
       referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
       body: JSON.stringify({
+        type: this.$route.params.type,
         product: this.$route.params.product_name,
       }), // body data type must match "Content-Type" header
     })

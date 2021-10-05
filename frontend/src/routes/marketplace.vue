@@ -6,7 +6,7 @@
         <div v-for="(item, index) in marketplace_data" :key="index">
           <router-link
             class="routes-link"
-            :to="'/product/' + item['link_name']"
+            :to="'/product/panel/' + item['link_name']"
           >
             <ProductList :data="item" />
           </router-link>

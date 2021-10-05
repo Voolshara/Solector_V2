@@ -102,6 +102,12 @@ export default {};
   }
 }
 
+@media screen and (max-width: 430px) {
+  .footer_back {
+    flex-direction: column;
+  }
+}
+
 .footer_back_adress {
   display: flex;
   flex-direction: column;

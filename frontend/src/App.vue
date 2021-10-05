@@ -27,6 +27,9 @@ export default {
 
 :root {
   --global-background: rgb(255, 255, 255);
+  --main-color: #fc7061;
+  --elements-background: #edf1fa;
+  --main-hover: #af483c;
 }
 
 #app {

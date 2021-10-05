@@ -57,6 +57,14 @@ class Panels(Base):
     panel_link = sa.Column(sa.String())
 
 
+class Popular_products(Base):
+    __tablename__ = "popular_panel"
+    id = sa.Column(sa.Integer, primary_key=True)
+    product_id = sa.Column(sa.Integer, sa.ForeignKey(Panels.id))
+    product_type = sa.Column(sa .String())
+    popularity = sa.Column(sa.Integer)
+
+
 class DB_get:
     def __init__(self):
         pass
@@ -134,19 +142,45 @@ class DB_get:
                 })
             return PANELS
 
-    def get_product(self, product):
+    def get_product(self, product_data):
+        product_type =  product_data['type']
+        product = product_data['product']
+        if product_type == "panel":
+            with create_session() as session:
+                db_response = session.query(Panels).filter(Panels.link_name == product).one_or_none()
+                producer_response = session.query(Panel_Producers).filter(Panel_Producers.id == db_response.producer).one_or_none()
+                panel_data = {
+                        'name' : db_response.name,
+                        'cost' : db_response.cost,
+                        'power' : db_response.power,
+                        'efficiency' : db_response.efficiency,
+                        'img' : db_response.img_link,
+                        'producer' : producer_response.name,
+                        'panel_link' : db_response.panel_link,
+                    }
+
+                self.set_popularity(product_type, db_response.id)
+
+                return panel_data
+
+    def set_popularity(self, product_type, product):
         with create_session() as session:
-            db_response = session.query(Panels).filter(Panels.link_name == product).one_or_none()
-            producer_response = session.query(Panel_Producers).filter(Panel_Producers.id == db_response.producer).one_or_none()
-            return {
-                    'name' : db_response.name,
-                    'cost' : db_response.cost,
-                    'power' : db_response.power,
-                    'efficiency' : db_response.efficiency,
-                    'img' : db_response.img_link,
-                    'producer' : producer_response.name,
-                    'panel_link' : db_response.panel_link,
-                }
+            popular_response = session.query(Popular_products).filter(and_(
+                Popular_products.product_id == product,
+                Popular_products.product_type == product_type
+                )).one_or_none()
+            if popular_response is None:
+                session.add(Popular_products(
+                    product_id=product,
+                    product_type=product_type,
+                    popularity=1,
+                ))
+            else:
+                popular_response = session.query(Popular_products).filter(and_(
+                    Popular_products.product_id == product,
+                    Popular_products.product_type == product_type
+                )).update({Popular_products.popularity: popular_response.popularity + 1})
+                session.commit()
 
 
 class DB_new:
@@ -155,8 +189,8 @@ class DB_new:
 
     def create_all_tables(self):
         Base.metadata.create_all(engine)
-        self.set_all_producers()
-        self.set_all_panels()
+        # self.set_all_producers()
+        # self.set_all_panels()
     
     def set_all_producers(self):
         for el in self.PRODUCERS:
