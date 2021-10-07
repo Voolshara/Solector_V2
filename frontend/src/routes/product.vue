@@ -12,7 +12,7 @@ export default {
     };
   },
   mounted() {
-    fetch("http://localhost:4900/product", {
+    fetch("http://192.168.43.163:4900/product", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached

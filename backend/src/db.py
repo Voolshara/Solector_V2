@@ -64,6 +64,21 @@ class Popular_products(Base):
     product_type = sa.Column(sa .String())
     popularity = sa.Column(sa.Integer)
 
+#['Название, Цена, Мощность вт/ч, Среднегодовая энергия на фэм втч/сутки, Кпд, Площадь, 'Ссылка на картинку', id производителя, 'Ссылка на продукт']
+class Complects(Base):
+    __tablename__ = "complects"
+    id = sa.Column(sa.Integer, primary_key=True)
+    name = sa.Column(sa.String())
+    cost = sa.Column(sa.Integer)
+    power = sa.Column(sa.Integer)
+    year_power = sa.Column(sa.Integer)
+    efficiency = sa.Column(sa.Float)
+    square = sa.Column(sa.Float)
+    img_link = sa.Column(sa.String())
+    producer = sa.Column(sa.String())
+    product = sa.Column(sa.String())
+    type = sa.Column(sa.String())
+
 
 class DB_get:
     def __init__(self):
@@ -142,6 +157,39 @@ class DB_get:
                 })
             return PANELS
 
+    def get_panels_data(self):
+        with create_session() as session:
+            db_response = session.query(Panels).all()
+            out = []
+            for i in db_response:
+                response = session.query(Panel_Producers).filter(
+                        Panel_Producers.id == i.producer).one_or_none()
+                out.append(
+                    [i.name, i.cost, i.power, i.efficiency, i.img_link, i.panel_link, response.name]
+                )
+            return out
+
+    def get_complects_data(self):
+        with create_session() as session:
+            db_response = session.query(Complects).all()
+            out = []
+            for i in db_response:
+                out.append(
+                    [
+                    i.name,
+                    i.cost,
+                    i.power,
+                    i.year_power,
+                    i.efficiency,
+                    i.square,
+                    i.img_link,
+                    i.producer,
+                    i.product,
+                    i.type
+                    ]
+                )
+            return out
+
     def get_product(self, product_data):
         product_type =  product_data['type']
         product = product_data['product']
@@ -191,6 +239,7 @@ class DB_new:
         Base.metadata.create_all(engine)
         # self.set_all_producers()
         # self.set_all_panels()
+        # self.set_all_complects()
     
     def set_all_producers(self):
         for el in self.PRODUCERS:
@@ -198,6 +247,55 @@ class DB_new:
                 status_response = session.query(Panel_Producers).filter(Panel_Producers.name == el).one_or_none()
                 if status_response is None:
                     session.add(Panel_Producers(name=el))
+
+    def set_all_complects(self):
+        FULL_KIT = {
+            "FULL_NETWORK_KIT": [
+                ['Сетевая солнечная электростанция С1', 99290, 1000, 4600, None, 7.8, 'https://www.hevelsolar.com/loaded/catalog/goods/afd04b30d820f6562b266d991cefb7d9.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/network/setevaya-solnechnaya-elektrostanciya-s1/'],
+                ['Сетевая солнечная электростанция С2', 187890, 3000, 11900, None, 20, 'https://www.hevelsolar.com/loaded/catalog/goods/thumbs/c998a204d75724f312437d8ca54ab054.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/network/setevaya-solnechnaya-elektrostanciya-s2/'],
+                ['Сетевая солнечная электростанция С3', 315390, 5000, 20700, None, 34.9, 'https://www.hevelsolar.com/loaded/catalog/goods/thumbs/f77170adc339825ebc4a6e65d61326d2.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/network/setevaya-solnechnaya-elektrostanciya-s3/'],
+                ['Сетевая солнечная электростанция C3-3', 352490, 5000, 20700, None, 34.9, 'https://www.hevelsolar.com/loaded/catalog/goods/thumbs/6d534a8c2cae07b2a52ffe58cc0a1c17.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/network/c3-3/'],
+                ['Сетевая солнечная электростанция С4-М', 532390, 8000, 32300, None, 58, 'https://www.hevelsolar.com/loaded/catalog/goods/thumbs/13b2375d1d04f2b4498787c2c5d7579b.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/network/setevaya-solnechnaya-elektrostanciya-s4-m/'],
+                ['Сетевая солнечная электростанция С4', 620690, 10000, 40500, None, 74, 'https://www.hevelsolar.com/loaded/catalog/goods/thumbs/0b426f90bb818cc171dc5fdcd834f9d4.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/network/setevaya-solnechnaya-elektrostanciya-s4/'],
+                ['Сетевая солнечная электростанция С5-М', 735990, 12000, 47500, None, 86, 'https://www.hevelsolar.com/loaded/catalog/goods/thumbs/d161198d1f379ff5dbc4dc65290bf7a1.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/network/setevaya-solnechnaya-elektrostanciya-s5-m/'],
+                ['Сетевая солнечная электростанция С5', 872690, 15000, 60800, None, 111, 'https://www.hevelsolar.com/loaded/catalog/goods/thumbs/410692c48ef64dcbe04c8b7c2805b1f3.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/network/setevaya-solnechnaya-elektrostanciya-s5/'],
+                ['Сетевая солнечная электростанция С6', 1166890, 20000, 81000, None, 147, 'https://www.hevelsolar.com/loaded/catalog/goods/thumbs/ad3cccd8818dc23f37254e52c5fd044f.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/network/setevaya-solnechnaya-elektrostanciya-s6/'],
+                ['Сетевая солнечная электростанция С7', 1464890, 25000, 100000, None, 180, 'https://www.hevelsolar.com/loaded/catalog/goods/thumbs/6154f20909325a74d9fa82c1208bf076.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/network/setevaya-solnechnaya-elektrostanciya-s3-16049328011/'],
+                ['Сетевая солнечная электростанция С8', 1659790, 30000, 121000, None, 221, 'https://www.hevelsolar.com/loaded/catalog/goods/thumbs/e4f1a4196429b0981e2bb4039ea1f435.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/network/setevaya-solnechnaya-elektrostanciya-s8/'],
+                ['Сетевая солнечная электростанция С9', 2686690, 50000, 202000, None, 360, 'https://www.hevelsolar.com/loaded/catalog/goods/269bf0a767e3444b7f82cff18d5a4816.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/network/setevaya-solnechnaya-elektrostanciya-s9/']
+            ],
+            "FULL_STAND-ALONE_KIT": [
+                #['Название, Цена, Мощность вт/ч, Среднегодовая энергия на фэм втч/сутки, Емкость АКБ, Кпд, Площадь, 'Ссылка на картинку', id производителя, 'Ссылка на продукт']
+                ['Автономная электростанция А1', 31890, 150, 990,  None, 1.9, 'https://www.hevelsolar.com/loaded/catalog/goods/891955284634b9a17063abdb1c1e119b.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/autonom/avtonomnaya-solnechnaya-elektrostanciya-a1/'],
+                ['Автономная электростанция А2', 63590, 200, 990, None, 1.9, 'https://www.hevelsolar.com/loaded/catalog/goods/thumbs/133bc5bb6fb14781ade619939f9d291f.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/autonom/avtonomnaya-solnechnaya-elektrostanciya-a2/'],
+                ['Автономная электростанция А3', 94490, 200, 1990,  None, 3.9, 'https://www.hevelsolar.com/loaded/catalog/goods/thumbs/a16cbe013dbc25370a913b07871dd4d8.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/autonom/avtonomnaya-solnechnaya-elektrostanciya-a3/'],
+                ['Автономная электростанция А4', 197790, 1000, 4610,  None, 7.8, 'https://www.hevelsolar.com/loaded/catalog/goods/thumbs/acbd60c3ef26cf854d13d88efb1ded46.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/autonom/universalnaya-solnechnaya-elektrostanciya-a4/'],
+                ['Автономная электростанция А5', 318890, 1600, 6900,  None, 11.6, 'https://www.hevelsolar.com/loaded/catalog/goods/thumbs/50329ce482ac13bc1b4fe70e60971b58.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/autonom/universalnaya-solnechnaya-elektrostanciya-a5/'],
+                ['Автономная электростанция А6', 379490, 2400, 9500, None, 19, 'https://www.hevelsolar.com/loaded/catalog/goods/thumbs/c7b13dbbc4609ed581b1caed47ae0ada.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/autonom/universalnaya-solnechnaya-elektrostanciya-a6/'],
+                ['Автономная электростанция А7', 536990, 4000, 14300, None, 35, 'https://www.hevelsolar.com/loaded/catalog/goods/thumbs/b47d7b2cab71c9f3c6774513c45bd1e4.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/autonom/universalnaya-solnechnaya-elektrostanciya-a7/']
+            ],
+            "FULL_HYBRID_KIT": [
+                #['Название, Цена, Мощность вт/ч, Среднегодовая энергия на фэм втч/сутки, Емкость АКБ, Кпд, Площадь, 'Ссылка на картинку', id производителя, 'Ссылка на продукт']
+                ['Гибридная электростанция Н1', 475690, 3600, 13800, None, 24, 'https://www.hevelsolar.com/loaded/catalog/goods/thumbs/d5a40452bb02e0a9f24a1cde24369adf.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/gibridnye/hybrid-1/'],
+                ['Гибридная электростанция Н2', 539590, 5000, 16100,  None, 32, 'https://www.hevelsolar.com/loaded/catalog/goods/thumbs/145ad9b2f93ac1ce5594bb9eeeb46761.jpg', "Hevel Solar", 'https://www.hevelsolar.com/catalog/gibridnye/hybrid-2/']
+            ]
+        }
+        for typ in FULL_KIT:
+            for name, cost, power, year_power, eff, square, img_link, producer, product in FULL_KIT[typ]:
+                with create_session() as session:
+                    session.add(Complects(
+                    name = name,
+                    cost = cost,
+                    power = power,
+                    year_power = year_power,
+                    efficiency = 19.1,
+                    square = square,
+                    img_link = img_link,
+                    producer = producer,
+                    product = product,
+                    type = typ,
+                    ))
+
     
     def set_all_panels(self):
         PANELS = [

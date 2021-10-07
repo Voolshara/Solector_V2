@@ -61,7 +61,7 @@ export default {
       if (variable !== null) {
         this.all_filters[variable["type"]] = variable["data"];
       }
-      fetch("http://localhost:4900/marketplace/data", {
+      fetch("http://192.168.43.163:4900/marketplace/data", {
         method: "POST", // *GET, POS  T, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -94,7 +94,7 @@ export default {
     },
   },
   beforeCreate() {
-    fetch("http://localhost:4900/marketplace/get_filters", {
+    fetch("http://192.168.43.163:4900/marketplace/get_filters", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
