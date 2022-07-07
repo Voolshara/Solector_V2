@@ -38,10 +38,23 @@
 </template>
 
 <style lang="scss">
+:root {
+  --global-background: #faf6f3;
+}
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap");
-.landing{
-  .promo {
-    margin-top: 40px;
+
+.promo {
+  margin-top: 40px;
+  margin-bottom: 40px;
+  display: flex;
+  text-align: center;
+  @media (max-width: 720px) {
+    flex-direction: column;
+  }
+
+  .text {
+    flex-grow: 2;
+
     display: flex;
 
     .text {

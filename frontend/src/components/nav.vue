@@ -1,37 +1,11 @@
 <template>
   <nav>
-    <!-- <div class="nav">
-      <ul>
-        <li><router-link to="/">О нас</router-link></li>
-        <li><router-link to="/marketplace">MarketPlace</router-link></li>
-        <li><a href="#">Форум</a></li>
-        <li><a href="#">Инструкция</a></li>
-
-        <li>
-          <el-dropdown
-            ><span class="el-dropdown-link"
-              >Подбор <i class="el-icon-arrow-down el-icon--right"></i>
-            </span>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item>Action 1</el-dropdown-item>
-                <el-dropdown-item>Action 2</el-dropdown-item>
-                <el-dropdown-item>Action 3</el-dropdown-item>
-                <el-dropdown-item disabled>Action 4</el-dropdown-item>
-                <el-dropdown-item divided>Action 5</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </li>
-
-        <li><router-link to="/lk" class="lk-button">Войти</router-link></li>
-      </ul>
-    </div> -->
     <el-menu
-      :default-active="activeIndex"
+      :default-active="set_nav($route.path)"
       class="el-menu-demo"
       mode="horizontal"
       v-on:select="handleSelect"
+      background-color="var(--global-background)"
       text-color="#2c3e50"
       active-text-color="#FC7061"
       style="border-bottom: 0 solid black;"
@@ -59,14 +33,17 @@
 <script>
 export default {
   data() {
-    return {
-      activeIndex: "/",
-    };
+    return {};
   },
   methods: {
+    set_nav(value) {
+      if (value.includes("product")) {
+        return "/marketplace";
+      }
+      return value;
+    },
     handleSelect(key) {
       this.$router.push(key);
-      console.log(key);
     },
   },
 };

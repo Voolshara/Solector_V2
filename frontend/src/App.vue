@@ -1,8 +1,8 @@
 <template>
   <div class="wrapper">
-    <nav-el />
+    <NavEl />
     <router-view />
-    <Footer/>
+    <Footer />
   </div>
 </template>
 
@@ -14,7 +14,7 @@ export default {
   name: "App",
   components: {
     NavEl,
-    Footer
+    Footer,
   },
 };
 </script>
@@ -24,11 +24,20 @@ export default {
   display: flex;
   flex-direction: column;
 }
+
+:root {
+  --global-background: rgb(255, 255, 255);
+  --main-color: #fc7061;
+  --elements-background: #edf1fa;
+  --main-hover: #af483c;
+}
+
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   display: flex;
+  background-color: var(--global-background);
+  /* background-color: #faf6f3; */
   flex-direction: column;
   color: #2c3e50;
   margin: 0 auto;
